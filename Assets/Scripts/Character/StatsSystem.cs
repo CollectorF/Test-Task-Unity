@@ -21,6 +21,6 @@ public class StatsSystem : MonoBehaviour
 
     public void ApplyStateChange(BaseStateChange change)
     {
-        State = change.ApplyChange(State);;
+        State = change.ApplyChange(State);
     }
 }

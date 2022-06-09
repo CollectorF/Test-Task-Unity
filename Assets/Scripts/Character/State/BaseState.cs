@@ -10,9 +10,9 @@ public class BaseState
 
     public BaseState(float speed, float health, float maxHealth)
     {
-        Speed = Mathf.Clamp(speed, 1, Mathf.Infinity);
+        Speed = Mathf.Clamp(speed, 0, Mathf.Infinity);
         MaxHealth = maxHealth;
-        Health = Mathf.Clamp(health, 0.0f, maxHealth);
+        Health = Mathf.Clamp(health, 0, maxHealth);
     }
 
     public BaseState(CharacterStarterInfo starerInfo)
