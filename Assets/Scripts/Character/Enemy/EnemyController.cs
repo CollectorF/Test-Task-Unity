@@ -22,4 +22,11 @@ public class EnemyController : BaseCharacterController
         stats.ApplyStateChange(new HealthStateChange(-10));
         Debug.Log($"Health: {stats.State.Health} / {stats.State.MaxHealth}");
     }
+
+    [ContextMenu("Speed")]
+    private void Speed()
+    {
+        stats.ApplyStateChange(new SpeedStateChange(1));
+        Debug.Log($"Speed: {stats.State.Speed}");
+    }
 }

@@ -10,7 +10,7 @@ public class BaseState
 
     public BaseState(float speed, float health, float maxHealth)
     {
-        Speed = speed;
+        Speed = Mathf.Clamp(speed, 1, Mathf.Infinity);
         MaxHealth = maxHealth;
         Health = Mathf.Clamp(health, 0.0f, maxHealth);
     }
@@ -20,7 +20,6 @@ public class BaseState
     {
 
     }
-
 
     public virtual BaseState Mutate(
         float? speed = null,
