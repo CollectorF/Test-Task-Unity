@@ -1,14 +1,20 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyController : BaseCharacterController
 {
-
+    [SerializeField]
+    private NavMeshAgent agent;
+    private Collider[] colliders;
     public BaseState State => stats.State;
+    private bool isDead = false;
 
 
     protected override void Awake()
     {
         base.Awake();
+        OnDie += controller => isDead = true;
+        colliders = GetComponentsInChildren<Collider>();
     }
 
     protected override void Start()
@@ -16,17 +22,12 @@ public class EnemyController : BaseCharacterController
         base.Start();
     }
 
-    [ContextMenu("Damage")]
-    private void Damage()
+    protected override void OnStateUpdate(BaseState oldState, BaseState newState)
     {
-        stats.ApplyStateChange(new HealthStateChange(-10));
-        Debug.Log($"Health: {stats.State.Health} / {stats.State.MaxHealth}");
-    }
-
-    [ContextMenu("Speed")]
-    private void Speed()
-    {
-        stats.ApplyStateChange(new SpeedStateChange(1));
-        Debug.Log($"Speed: {stats.State.Speed}");
+        base.OnStateUpdate(oldState, newState);
+        if (oldState == null || oldState.Speed != newState.Speed)
+        {
+            agent.speed = newState.Speed;
+        }
     }
 }

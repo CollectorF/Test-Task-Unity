@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Weapon
+  - Enemy/Enemy
+  - Enemy/Enemy_Head
+  - Enemy/Enemy_Body
   layers:
   - Default
   - TransparentFX

@@ -8,10 +8,15 @@ public class BaseCharacterController : MonoBehaviour
 
     protected StatsSystem stats;
 
+    public delegate void DieEvent(BaseCharacterController controller);
+
+    public event DieEvent OnDie;
+
 
     protected virtual void Awake()
     {
         stats = GetComponent<StatsSystem>();
+        stats.OnStateChanged += OnStateUpdate;
     }
 
     protected virtual void Start()
@@ -22,5 +27,12 @@ public class BaseCharacterController : MonoBehaviour
     protected virtual BaseState InitializeState()
     {
         return new BaseState(starterInfo);
+    }
+    protected virtual void OnStateUpdate(BaseState oldState, BaseState newState)
+    {
+        if (newState.Health <= 0)
+        {
+            OnDie?.Invoke(this);
+        }
     }
 }
