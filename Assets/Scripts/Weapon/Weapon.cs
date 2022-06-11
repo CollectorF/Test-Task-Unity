@@ -4,17 +4,14 @@
 [RequireComponent(typeof(FixedJoint))]
 public class Weapon : MonoBehaviour
 {
-    [SerializeField]
-    private WeaponParameters parameters;
+    public WeaponParameters parameters;
 
     private FixedJoint joint;
     private Rigidbody rigidBody;
     private Rigidbody targetRigidBody;
-    private RaycastHit hitPoint;
     private Collider collider;
     private StatsSystem statsSystem;
     private GameObject collisionObject;
-    private float speed;
     private bool isAlive;
 
     public delegate void OnCollideWithoutStatSystem(GameObject enteredObject);
@@ -41,7 +38,6 @@ public class Weapon : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         joint = GetComponent<FixedJoint>();
         collider = GetComponent<Collider>();
-        speed = parameters.ThrowSpeed;
         isAlive = true;
 
         OnCollide += enteredObject =>
@@ -50,33 +46,37 @@ public class Weapon : MonoBehaviour
             {
                 return;
             }
+            else if (enteredObject.CompareTag("Level"))
+            {
+                isAlive = false;
+                rigidBody.Sleep();
+            }
         };
 
         OnEnter += statsSystem => statsSystem.gameObject.CompareTag("Enemy/Enemy");
         OnActivate += statsSystem => StuckInTarget();
     }
 
-    private void FixedUpdate()
-    {
-        MoveTowards();
-    }
-
 
     private void OnTriggerEnter(Collider collider)
     {
-        collisionObject = collider.gameObject;
-        statsSystem = collisionObject.GetComponentInParent<StatsSystem>();
-        targetRigidBody = collisionObject.GetComponentInParent<Rigidbody>();
-        if (statsSystem == null)
+        if (isAlive)
         {
-            OnCollide?.Invoke(collisionObject);
-            return;
-        }
-        bool? shouldExecuteEffect = OnEnter?.Invoke(statsSystem);
-        if (!shouldExecuteEffect.HasValue || shouldExecuteEffect.Value)
-        {
-            ExecuteEffect(statsSystem);
-            OnActivate?.Invoke(statsSystem);
+            collisionObject = collider.gameObject;
+            statsSystem = collisionObject.GetComponentInParent<StatsSystem>();
+            targetRigidBody = collisionObject.GetComponentInParent<Rigidbody>();
+            if (statsSystem == null)
+            {
+                OnCollide?.Invoke(collisionObject);
+                isAlive = false;
+                return;
+            }
+            bool? shouldExecuteEffect = OnEnter?.Invoke(statsSystem);
+            if (!shouldExecuteEffect.HasValue || shouldExecuteEffect.Value)
+            {
+                ExecuteEffect(statsSystem);
+                OnActivate?.Invoke(statsSystem);
+            }
         }
     }
 
@@ -85,6 +85,25 @@ public class Weapon : MonoBehaviour
         targetStatSystem.ApplyStateChange(GetSpeedStateChange());
         targetStatSystem.ApplyStateChange(GetHeahthStateChange());
         Debug.Log($"Health: {targetStatSystem.State.Health} / {targetStatSystem.State.MaxHealth} \n Speed: {targetStatSystem.State.Speed}");
+    }
+
+    private void FixedUpdate()
+    {
+        if (isAlive)
+        {
+            rigidBody.MovePosition(transform.position + transform.forward * parameters.ThrowSpeed * Time.fixedDeltaTime);
+        }
+
+        //if (isAlive)
+        //{
+        //    rigidBody.MovePosition(position * parameters.ThrowSpeed * Time.fixedDeltaTime);
+        //    position = position + Vector3.forward;
+        //    if (parameters.needsTorque)
+        //    {
+        //        Quaternion deltaRotation = Quaternion.Euler(parameters.AngleVelocity * Time.fixedDeltaTime);
+        //        rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
+        //    }
+        //}
     }
 
     private BaseStateChange GetHeahthStateChange()
@@ -96,25 +115,13 @@ public class Weapon : MonoBehaviour
         return new SpeedStateChange(speedChangeValue);
     }
 
-    public void SetTargetPoint(RaycastHit raycastHit)
-    {
-        hitPoint = raycastHit;
-    }
-
-    public void MoveTowards()
-    {
-        if (isAlive)
-        {
-            rigidBody.MovePosition(transform.position + hitPoint.point * speed * Time.fixedDeltaTime);
-        }
-    }
-
     private void StuckInTarget()
     {
         isAlive = false;
         collider.enabled = false;
         joint.connectedBody = targetRigidBody;
         transform.parent = collisionObject.transform;
+        rigidBody.velocity = Vector3.zero;
         rigidBody.useGravity = false;
         rigidBody.isKinematic = false;
 

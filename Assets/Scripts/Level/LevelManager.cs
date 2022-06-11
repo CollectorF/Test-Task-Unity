@@ -6,11 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(NavMeshSurface))]
 public class LevelManager : MonoBehaviour
 {
-    private NavMeshSurface navMeshSurface;
+    private NavMeshSurface[] navMeshSurfaces;
 
     private void Awake()
     {
-        navMeshSurface = GetComponent<NavMeshSurface>();
-        navMeshSurface.BuildNavMesh();
+        navMeshSurfaces = GetComponents<NavMeshSurface>();
+        foreach (var item in navMeshSurfaces)
+        {
+            item.BuildNavMesh();
+        }
+
     }
 }

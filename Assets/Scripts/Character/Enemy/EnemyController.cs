@@ -1,6 +1,7 @@
 using UnityEngine;
 using CleverCrow.Fluid.BTs.Trees;
-
+using CleverCrow.Fluid.BTs.Tasks;
+using System.Collections;
 
 public class EnemyController : BaseCharacterController
 {
@@ -8,21 +9,50 @@ public class EnemyController : BaseCharacterController
     private BehaviorTree behaviorTree;
     public BaseState State => stats.State;
     private bool isDead = false;
+    internal bool isKnockedOut = false;
+    private Coroutine timerCoroutine;
+    private float timer;
 
     protected override void Awake()
     {
         base.Awake();
         OnDie += controller => isDead = true;
+        OnKnockOut += controller => isKnockedOut = true;
     }
 
     protected override void Start()
     {
         base.Start();
         behaviorTree = new BehaviorTreeBuilder(gameObject)
-            .Sequence("Move towards player")
-                .Condition("If not dead", () => !isDead)
-                    .FollowPlayer(gameManager.Player.transform, agent, 1)
-            .End()
+            .Selector()
+
+                .Sequence("Move towards player")
+                    .Condition("If not dead", () =>
+                    {
+                        return !isDead && !isKnockedOut;
+                    })
+                    .FollowPlayer(gameManager.Player.transform, agent, 1, this)
+                .End()
+
+                .Sequence("Lie down")
+                    .Condition("If is injured", () =>
+                    {
+                        return !isDead && isKnockedOut;
+                    })
+                    .Do("Lie down", () =>
+                    {
+                        SetAgentEnabledState(false);
+                        return TaskStatus.Success;
+                    })
+                    .WaitTime(starterInfo.delayOnInjury)
+                    .Do("Get up again", () =>
+                    {
+                        SetAgentEnabledState(true);
+                        isKnockedOut = false;
+                        return TaskStatus.Success;
+                    })
+                .End()
+
         .Build();
     }
 
@@ -41,5 +71,10 @@ public class EnemyController : BaseCharacterController
         {
             agent.speed = newState.Speed * 0.33f;
         }
+    }
+
+    private void SetAgentEnabledState(bool state)
+    {
+        agent.enabled = state;
     }
 }

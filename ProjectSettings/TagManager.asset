@@ -8,6 +8,7 @@ TagManager:
   - Enemy/Enemy
   - Enemy/Enemy_Head
   - Enemy/Enemy_Body
+  - Level
   layers:
   - Default
   - TransparentFX

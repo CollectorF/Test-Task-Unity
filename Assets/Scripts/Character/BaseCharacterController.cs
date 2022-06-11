@@ -14,9 +14,10 @@ public class BaseCharacterController : MonoBehaviour
     private MeshRenderer[] meshRenderers;
 
     public delegate void DieEvent(BaseCharacterController controller);
+    public delegate void InjuryEvent(BaseCharacterController controller);
 
     public event DieEvent OnDie;
-
+    public event InjuryEvent OnKnockOut;
 
     protected virtual void Awake()
     {
@@ -47,6 +48,10 @@ public class BaseCharacterController : MonoBehaviour
             {
                 item.material.color = Color.gray;
             }
+        }
+        if (oldState != null && oldState.Health != newState.Health)
+        {
+            OnKnockOut?.Invoke(this);
         }
     }
 }
