@@ -6,6 +6,7 @@ public class PlatformEnemiesProcessor : MonoBehaviour
 {
     private List<EnemyController> enemies;
     private int childCount;
+    private bool isCompleted = false;
 
     public delegate void OnAllEnemiesDefeated();
 
@@ -37,9 +38,10 @@ public class PlatformEnemiesProcessor : MonoBehaviour
                 break;
             }
         }
-        if (enemies.Count == 0)
+        if (enemies.Count == 0 && !isCompleted)
         {
             OnAllDead?.Invoke();
+            isCompleted = true;
         }
     }
 }

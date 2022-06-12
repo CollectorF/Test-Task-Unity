@@ -365,6 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 1605655787}
   enemyManager: {fileID: 472275437}
+  levelManager: {fileID: 82139123}
   uiManager: {fileID: 1026426278}
 --- !u!1 &697451846
 GameObject:
@@ -411,8 +412,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AgentTypeID: -1372625422
-  m_StartPoint: {x: 0, y: 0.36198068, z: -3.6240444}
-  m_EndPoint: {x: 0, y: -1.2634313, z: 4.682026}
+  m_StartPoint: {x: 0, y: -1.2634313, z: 4.682026}
+  m_EndPoint: {x: 0, y: 0.36198068, z: -3.6240444}
   m_Width: 4.75
   m_CostModifier: 0
   m_Bidirectional: 0
@@ -1259,6 +1260,7 @@ GameObject:
   - component: {fileID: 1556312760}
   - component: {fileID: 1556312759}
   - component: {fileID: 1556312764}
+  - component: {fileID: 1556312765}
   m_Layer: 3
   m_Name: Platform2
   m_TagString: Untagged
@@ -1604,6 +1606,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.8455987, y: 0.85530114, z: 12.024702}
   m_Center: {x: 3.9227993, y: 0.42765033, z: 6.012351}
+--- !u!114 &1556312765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1556312757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3d6541184ce762439c7358b5d3497e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1565616505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1651,8 +1665,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   starterInfo:
-    Speed: 0
-    MaxHealth: 0
+    Speed: 4
+    MaxHealth: 100
     delayOnInjury: 0
   clickInputAction:
     m_Name: Click Input
@@ -1704,9 +1718,13 @@ MonoBehaviour:
       m_Action: Pos Input
       m_Flags: 0
     m_Flags: 0
-  spawnPoint: {fileID: 1991660400}
+  weaponSpawnPoint: {fileID: 1991660400}
   WeaponPrefab: {fileID: 8514631247670938253, guid: 9237e0ab762e0aa408bfa14a4bc02e7b,
     type: 3}
+  waypoints:
+  - {x: -0.7, y: 1.37, z: -15}
+  - {x: -0.7, y: 2.66, z: -0.54}
+  - {x: -0.7, y: 4.47, z: 16.5}
 --- !u!4 &1605655791
 Transform:
   m_ObjectHideFlags: 0
@@ -1715,7 +1733,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1605655787}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.7, y: 1.3746991, z: -14.95}
+  m_LocalPosition: {x: -0.7, y: 1.23, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2323,8 +2341,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AgentTypeID: -1372625422
-  m_StartPoint: {x: 0, y: 0.66160333, z: -2.5}
-  m_EndPoint: {x: 0, y: -0.5967878, z: 2.5}
+  m_StartPoint: {x: 0, y: -0.5967878, z: 2.5}
+  m_EndPoint: {x: 0, y: 0.66160333, z: -2.5}
   m_Width: 4.75
   m_CostModifier: 0
   m_Bidirectional: 0

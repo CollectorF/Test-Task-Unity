@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -11,13 +12,17 @@ public class PlayerController : BaseCharacterController
     [SerializeField]
     private InputAction posInputAction;
     [SerializeField]
-    private GameObject spawnPoint;
+    private GameObject weaponSpawnPoint;
+    [SerializeField]
+    private GameObject WeaponPrefab;
+    [SerializeField]
+    private List<Vector3> waypoints;
 
-    public GameObject WeaponPrefab;
     private Camera playerCamera;
     private GameObject currentWeapon;
     private Vector3 aimPoint;
     private Vector3 tapPoint;
+    private int pointNumber;
 
     public PlayerState State => (PlayerState)stats.State;
 
@@ -28,11 +33,13 @@ public class PlayerController : BaseCharacterController
         posInputAction.Enable();
         clickInputAction.performed += OnClick;
         playerCamera = GetComponentInChildren<Camera>();
+        pointNumber = 0;
     }
 
     protected override void Start()
     {
         base.Start();
+        agent.SetDestination(waypoints[pointNumber]);
     }
     private void OnDisable()
     {
@@ -57,8 +64,14 @@ public class PlayerController : BaseCharacterController
 #endif
             tapPoint += playerCamera.transform.forward * 10f;
             aimPoint = playerCamera.ScreenToWorldPoint(tapPoint);
-            currentWeapon = Instantiate(WeaponPrefab, spawnPoint.transform.position, Quaternion.identity);
+            currentWeapon = Instantiate(WeaponPrefab, weaponSpawnPoint.transform.position, Quaternion.identity);
             currentWeapon.transform.LookAt(aimPoint);
         }
+    }
+
+    public void MoveToNextPlatform()
+    {
+        pointNumber++;
+        agent.SetDestination(waypoints[pointNumber]);
     }
 }
