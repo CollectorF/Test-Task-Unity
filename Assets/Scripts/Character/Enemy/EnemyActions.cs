@@ -14,7 +14,7 @@ public class FollowPlayer : ActionBase
     private float remainingDistance;
     private float pathfindingTolerance = 1;
     private bool canFindAWay;
-    private bool isInjured;
+    private NavMeshPath path;
 
 
     public FollowPlayer(Transform target, NavMeshAgent agent, float targetDistance, EnemyController controller)
@@ -31,7 +31,6 @@ public class FollowPlayer : ActionBase
     {
         base.OnStart();
         CalculatePath();
-        //enemyController.OnInjured += ChangeInjuryState;
     }
 
     protected override TaskStatus OnUpdate()
@@ -45,13 +44,13 @@ public class FollowPlayer : ActionBase
             return TaskStatus.Continue;
         }
 
-        if (IsTargetWithinReach())
+        if (TargetIsReached())
         {
             agent.isStopped = true;
             return TaskStatus.Success;
         }
 
-        if (!canFindAWay)
+        if (canFindAWay == false)
         {
             return TaskStatus.Failure;
         }
@@ -68,25 +67,29 @@ public class FollowPlayer : ActionBase
         base.OnExit();
     }
 
-    private bool IsTargetWithinReach()
+    private bool TargetIsReached()
     {
         return Vector3.Distance(agent.transform.position, waypoint.position) < targetDistance;
     }
 
-    private void ChangeInjuryState()
-    {
-        isInjured = !isInjured;
-    }
-
     private void CalculatePath()
     {
-        if (IsTargetWithinReach()) 
+        path = new NavMeshPath();
+        agent.CalculatePath(waypoint.position, path);
+        if (path.status == NavMeshPathStatus.PathPartial)
         {
             agent.isStopped = true;
         }
+        else if (path.status == NavMeshPathStatus.PathComplete)
+        {
+            agent.isStopped = false;
+        }
         canFindAWay = agent.SetDestination(waypoint.position);
         targetPoint = waypoint.position;
-        agent.isStopped = false;
+        if (TargetIsReached())
+        {
+            agent.isStopped = true;
+        }
     }
 }
 

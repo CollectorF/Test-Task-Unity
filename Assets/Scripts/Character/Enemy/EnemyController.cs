@@ -8,10 +8,8 @@ public class EnemyController : BaseCharacterController
     [SerializeField]
     private BehaviorTree behaviorTree;
     public BaseState State => stats.State;
-    private bool isDead = false;
+    internal bool isDead = false;
     internal bool isKnockedOut = false;
-    private Coroutine timerCoroutine;
-    private float timer;
 
     protected override void Awake()
     {

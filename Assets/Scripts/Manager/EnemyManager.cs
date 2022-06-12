@@ -6,6 +6,13 @@ public class EnemyManager : MonoBehaviour
     [SerializeField]
     private List<EnemyController> enemyList;
 
+    private int initialEnemiesCount = 0;
+    private int killedEnemiesCount = 0;
+
+    public delegate void DieEvent(float initialCount, float killedCount);
+
+    public event DieEvent OnDie;
+
     private void Awake()
     {
         var preSpawnedEnemies = FindObjectsOfType<EnemyController>();
@@ -13,6 +20,7 @@ public class EnemyManager : MonoBehaviour
         {
             PrepareEnemy(enemy);
         }
+        initialEnemiesCount = preSpawnedEnemies.Length;
     }
 
     private void PrepareEnemy(EnemyController controller)
@@ -26,6 +34,8 @@ public class EnemyManager : MonoBehaviour
         if (controller is EnemyController enemyController)
         {
             enemyList.Remove(enemyController);
+            killedEnemiesCount++;
+            OnDie?.Invoke(initialEnemiesCount, killedEnemiesCount);
         }
     }
 }

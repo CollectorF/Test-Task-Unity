@@ -15,6 +15,5 @@ public class LevelManager : MonoBehaviour
         {
             item.BuildNavMesh();
         }
-
     }
 }

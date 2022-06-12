@@ -1,13 +1,15 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class PlayerController : BaseCharacterController
 {
     [SerializeField]
-    private InputAction _click;
+    private InputAction clickInputAction;
     [SerializeField]
-    private InputAction _pos;
+    private InputAction posInputAction;
     [SerializeField]
     private GameObject spawnPoint;
 
@@ -22,9 +24,9 @@ public class PlayerController : BaseCharacterController
     protected override void Awake()
     {
         base.Awake();
-        _click.Enable();
-        _pos.Enable();
-        _click.performed += OnClick;
+        clickInputAction.Enable();
+        posInputAction.Enable();
+        clickInputAction.performed += OnClick;
         playerCamera = GetComponentInChildren<Camera>();
     }
 
@@ -34,9 +36,9 @@ public class PlayerController : BaseCharacterController
     }
     private void OnDisable()
     {
-        _click.performed -= OnClick;
-        _click.Disable();
-        _pos.Disable();
+        clickInputAction.performed -= OnClick;
+        clickInputAction.Disable();
+        posInputAction.Disable();
     }
 
     protected override BaseState InitializeState()
