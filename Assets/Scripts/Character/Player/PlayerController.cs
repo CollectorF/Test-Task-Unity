@@ -23,8 +23,14 @@ public class PlayerController : BaseCharacterController
     private Vector3 aimPoint;
     private Vector3 tapPoint;
     private int pointNumber;
+    private float tolerance = 1;
+    private bool levelFinished = false;
 
     public PlayerState State => (PlayerState)stats.State;
+
+    public delegate void EndPointReached();
+
+    public event EndPointReached OnReachEndPoint;
 
     protected override void Awake()
     {
@@ -41,6 +47,20 @@ public class PlayerController : BaseCharacterController
         base.Start();
         agent.SetDestination(waypoints[pointNumber]);
     }
+
+    private void Update()
+    {
+        if (!levelFinished)
+        {
+            if (ReachedFinishPoint())
+            {
+                Debug.Log("You win!");
+                OnReachEndPoint?.Invoke();
+                levelFinished = true;
+            }
+        }
+    }
+
     private void OnDisable()
     {
         clickInputAction.performed -= OnClick;
@@ -73,5 +93,25 @@ public class PlayerController : BaseCharacterController
     {
         pointNumber++;
         agent.SetDestination(waypoints[pointNumber]);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy/Enemy"))
+        {
+            Debug.Log("Game over!");
+        }
+    }
+
+    private bool ReachedFinishPoint()
+    {
+        if ((transform.position - waypoints[waypoints.Count - 1]).sqrMagnitude < tolerance)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

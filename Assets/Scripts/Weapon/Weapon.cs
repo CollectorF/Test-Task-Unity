@@ -9,7 +9,7 @@ public class Weapon : MonoBehaviour
     private FixedJoint joint;
     private Rigidbody rigidBody;
     private Rigidbody targetRigidBody;
-    private Collider collider;
+    private Collider weaponCollider;
     private StatsSystem statsSystem;
     private GameObject collisionObject;
     private bool isAlive;
@@ -37,7 +37,7 @@ public class Weapon : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody>();
         joint = GetComponent<FixedJoint>();
-        collider = GetComponent<Collider>();
+        weaponCollider = GetComponent<Collider>();
         isAlive = true;
 
         OnCollide += enteredObject =>
@@ -50,6 +50,7 @@ public class Weapon : MonoBehaviour
             {
                 isAlive = false;
                 rigidBody.Sleep();
+                weaponCollider.enabled = false;
             }
         };
 
@@ -118,17 +119,12 @@ public class Weapon : MonoBehaviour
     private void StuckInTarget()
     {
         isAlive = false;
-        collider.enabled = false;
+        weaponCollider.enabled = false;
         joint.connectedBody = targetRigidBody;
         transform.parent = collisionObject.transform;
         rigidBody.velocity = Vector3.zero;
         rigidBody.useGravity = false;
         rigidBody.isKinematic = false;
 
-    }
-
-    private void Die()
-    {
-        Destroy(gameObject);
     }
 }

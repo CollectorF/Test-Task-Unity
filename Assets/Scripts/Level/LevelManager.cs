@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 
+[DefaultExecutionOrder(0)]
 [RequireComponent(typeof(NavMeshSurface))]
 public class LevelManager : MonoBehaviour
 {

@@ -31,6 +31,7 @@ public class BaseCharacterController : MonoBehaviour
     protected virtual void Start()
     {
         stats.State = InitializeState();
+        agent.enabled = true;
     }
 
     protected virtual BaseState InitializeState()
