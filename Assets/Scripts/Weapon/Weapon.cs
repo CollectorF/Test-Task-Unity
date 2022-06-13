@@ -1,17 +1,15 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(FixedJoint))]
+[RequireComponent(typeof(VFXProcessor))]
 public class Weapon : MonoBehaviour
 {
     public WeaponParameters parameters;
 
-    private FixedJoint joint;
     private Rigidbody rigidBody;
-    private Rigidbody targetRigidBody;
     private Collider weaponCollider;
     private StatsSystem statsSystem;
     private GameObject collisionObject;
+    private VFXProcessor vfxProcessor;
     private bool isAlive;
 
     public delegate void OnCollideWithoutStatSystem(GameObject enteredObject);
@@ -36,9 +34,10 @@ public class Weapon : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
-        joint = GetComponent<FixedJoint>();
         weaponCollider = GetComponent<Collider>();
+        vfxProcessor = GetComponent<VFXProcessor>();
         isAlive = true;
+
 
         OnCollide += enteredObject =>
         {
@@ -49,7 +48,7 @@ public class Weapon : MonoBehaviour
             else if (enteredObject.CompareTag("Level"))
             {
                 isAlive = false;
-                rigidBody.Sleep();
+                Destroy(rigidBody);
                 weaponCollider.enabled = false;
             }
         };
@@ -65,7 +64,6 @@ public class Weapon : MonoBehaviour
         {
             collisionObject = collider.gameObject;
             statsSystem = collisionObject.GetComponentInParent<StatsSystem>();
-            targetRigidBody = collisionObject.GetComponentInParent<Rigidbody>();
             if (statsSystem == null)
             {
                 OnCollide?.Invoke(collisionObject);
@@ -81,30 +79,20 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy/Enemy"))
+        {
+            ContactPoint contact = collision.contacts[0];
+            vfxProcessor.DisplayVFX(contact);
+        }
+    }
+
     private void ExecuteEffect(StatsSystem targetStatSystem)
     {
         targetStatSystem.ApplyStateChange(GetSpeedStateChange());
         targetStatSystem.ApplyStateChange(GetHeahthStateChange());
         Debug.Log($"Health: {targetStatSystem.State.Health} / {targetStatSystem.State.MaxHealth} \n Speed: {targetStatSystem.State.Speed}");
-    }
-
-    private void FixedUpdate()
-    {
-        if (isAlive)
-        {
-            rigidBody.MovePosition(transform.position + transform.forward * parameters.ThrowSpeed * Time.fixedDeltaTime);
-        }
-
-        //if (isAlive)
-        //{
-        //    rigidBody.MovePosition(position * parameters.ThrowSpeed * Time.fixedDeltaTime);
-        //    position = position + Vector3.forward;
-        //    if (parameters.needsTorque)
-        //    {
-        //        Quaternion deltaRotation = Quaternion.Euler(parameters.AngleVelocity * Time.fixedDeltaTime);
-        //        rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
-        //    }
-        //}
     }
 
     private BaseStateChange GetHeahthStateChange()
@@ -120,11 +108,18 @@ public class Weapon : MonoBehaviour
     {
         isAlive = false;
         weaponCollider.enabled = false;
-        joint.connectedBody = targetRigidBody;
         transform.parent = collisionObject.transform;
+        transform.position = collisionObject.transform.position;
         rigidBody.velocity = Vector3.zero;
-        rigidBody.useGravity = false;
-        rigidBody.isKinematic = false;
+        Destroy(rigidBody);
+    }
 
+    internal void AddImpulse()
+    {
+        rigidBody.AddForce(gameObject.transform.forward * parameters.ThrowSpeed, ForceMode.Impulse);
+        if (parameters.needsTorque)
+        {
+            rigidBody.AddRelativeTorque(parameters.AngleVelocity);
+        }
     }
 }

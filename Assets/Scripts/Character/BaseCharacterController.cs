@@ -11,7 +11,7 @@ public class BaseCharacterController : MonoBehaviour
     protected StatsSystem stats; 
     protected NavMeshAgent agent;
     protected GameManager gameManager;
-    private MeshRenderer[] meshRenderers;
+    private SkinnedMeshRenderer[] meshRenderers;
 
     public delegate void DieEvent(BaseCharacterController controller);
     public delegate void InjuryEvent(BaseCharacterController controller);
@@ -23,7 +23,7 @@ public class BaseCharacterController : MonoBehaviour
     {
         stats = GetComponent<StatsSystem>();
         agent = GetComponent<NavMeshAgent>();
-        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         gameManager = FindObjectOfType<GameManager>();
         stats.OnStateChanged += OnStateUpdate;
     }

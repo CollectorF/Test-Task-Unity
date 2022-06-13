@@ -86,6 +86,8 @@ public class PlayerController : BaseCharacterController
             aimPoint = playerCamera.ScreenToWorldPoint(tapPoint);
             currentWeapon = Instantiate(WeaponPrefab, weaponSpawnPoint.transform.position, Quaternion.identity);
             currentWeapon.transform.LookAt(aimPoint);
+            Weapon weaponController = currentWeapon.GetComponent<Weapon>();
+            weaponController.AddImpulse();
         }
     }
 
