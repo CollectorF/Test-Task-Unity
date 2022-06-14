@@ -109,7 +109,7 @@ public class Weapon : MonoBehaviour
         isAlive = false;
         weaponCollider.enabled = false;
         transform.parent = collisionObject.transform;
-        transform.position = collisionObject.transform.position;
+        transform.position = new Vector3(collisionObject.transform.position.x, collisionObject.transform.position.y, collisionObject.transform.position.z - 0.1f);
         rigidBody.velocity = Vector3.zero;
         Destroy(rigidBody);
     }
