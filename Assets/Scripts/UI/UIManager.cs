@@ -25,8 +25,9 @@ public class UIManager : MonoBehaviour
         gameplayUi.SetActive(false);
     }
 
-    internal void ActivateGameplayUI()
+    internal void ActivateGameplayUI(int number)
     {
+        gameplayUiController.SetLevelNumber(number);
         endUi.SetActive(false);
         gameplayUi.SetActive(true);
     }

@@ -16,10 +16,10 @@ public class LevelManager : MonoBehaviour
     internal LevelState levelState;
 
     public delegate void OnMoveToNextPlatform();
-    public delegate void OnLevelLoad();
+    //public delegate void OnLevelLoad();
 
-    public event OnLevelLoad OnMove;
-    public event OnLevelLoad OnLoad;
+    public event OnMoveToNextPlatform OnMove;
+    public Action<int> OnLoad;
 
     private void Awake()
     {
@@ -53,7 +53,7 @@ public class LevelManager : MonoBehaviour
         var levelToLoad = currentLevelNumber;
         if (levelState == LevelState.Win)
         {
-            levelToLoad = currentLevelNumber + 1;
+            levelToLoad = currentLevelNumber;
         }
         if (currentLevelNumber < levelsCount)
         {
@@ -63,6 +63,6 @@ public class LevelManager : MonoBehaviour
         {
             SceneManager.LoadScene(0);
         }
-        OnLoad?.Invoke();
+        OnLoad?.Invoke(currentLevelNumber);
     }
 }

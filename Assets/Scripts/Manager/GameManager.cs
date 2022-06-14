@@ -25,14 +25,15 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         playerController = Player.GetComponent<PlayerController>();
-        playerController.OnReachEndPoint += UpdateUi;
-        levelManager.OnLoad += uiManager.ActivateGameplayUI;
     }
 
     private void Start()
     {
-        enemyManager.OnDie += uiManager.UpdateProgressBar;
+        uiManager.ActivateGameplayUI(levelManager.GetCurrentLevelNumber());
         levelManager.OnMove += playerController.MoveToNextPlatform;
+        playerController.OnReachEndPoint += UpdateUi;
+        enemyManager.OnDie += uiManager.UpdateProgressBar;
+        levelManager.OnLoad += uiManager.ActivateGameplayUI;
     }
 
     private void UpdateUi(LevelState state)

@@ -34,7 +34,7 @@ public class EnemyManager : MonoBehaviour
         if (controller is EnemyController enemyController)
         {
             enemyList.Remove(enemyController);
-            killedEnemiesCount++;
+            killedEnemiesCount = initialEnemiesCount - enemyList.Count;
             OnDie?.Invoke(initialEnemiesCount, killedEnemiesCount);
         }
     }
