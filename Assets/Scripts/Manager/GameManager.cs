@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         playerController = Player.GetComponent<PlayerController>();
+        playerController.OnReachEndPoint += levelManager.LoadLevel; 
     }
 
     private void Start()
