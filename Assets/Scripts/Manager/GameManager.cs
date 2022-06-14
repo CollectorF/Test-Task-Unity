@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum LevelState
+{
+    Win,
+    Lose
+}
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
@@ -19,18 +25,19 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         playerController = Player.GetComponent<PlayerController>();
-        playerController.OnReachEndPoint += levelManager.LoadLevel; 
+        playerController.OnReachEndPoint += UpdateUi;
+        levelManager.OnLoad += uiManager.ActivateGameplayUI;
     }
 
     private void Start()
     {
-        enemyManager.OnDie += UpdateProgressBar;
+        enemyManager.OnDie += uiManager.UpdateProgressBar;
         levelManager.OnMove += playerController.MoveToNextPlatform;
     }
 
-    private void UpdateProgressBar(float initialCount, float killedCount)
+    private void UpdateUi(LevelState state)
     {
-        completePercent = killedCount / initialCount * 100;
-        uiManager.UpdateLevelProgress(completePercent);
+        levelManager.levelState = state;
+        uiManager.ActivateLevelEndUI(levelManager.GetCurrentLevelNumber(), state);
     }
 }

@@ -12,11 +12,14 @@ public class LevelManager : MonoBehaviour
     private NavMeshSurface[] navMeshSurfaces;
     private PlatformEnemiesProcessor[] platforms;
     private int levelsCount;
-    private int currentLevelIndex;
+    private int currentLevelNumber;
+    internal LevelState levelState;
 
     public delegate void OnMoveToNextPlatform();
+    public delegate void OnLevelLoad();
 
-    public event OnMoveToNextPlatform OnMove;
+    public event OnLevelLoad OnMove;
+    public event OnLevelLoad OnLoad;
 
     private void Awake()
     {
@@ -31,6 +34,8 @@ public class LevelManager : MonoBehaviour
             item.OnAllDead += MovePlayerToNextPlatform;
         }
         levelsCount = SceneManager.sceneCountInBuildSettings;
+        var currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+        currentLevelNumber = currentLevelIndex + 1;
     }
 
     private void MovePlayerToNextPlatform()
@@ -38,16 +43,26 @@ public class LevelManager : MonoBehaviour
         OnMove?.Invoke();
     }
 
-    internal void LoadLevel()
+    internal int GetCurrentLevelNumber()
     {
-        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-        if (currentLevelIndex + 1 < levelsCount)
+        return currentLevelNumber;
+    }
+
+    public void LoadLevel()
+    {
+        var levelToLoad = currentLevelNumber;
+        if (levelState == LevelState.Win)
         {
-            SceneManager.LoadScene(currentLevelIndex + 1);
+            levelToLoad = currentLevelNumber + 1;
+        }
+        if (currentLevelNumber < levelsCount)
+        {
+            SceneManager.LoadScene(levelToLoad);
         }
         else
         {
             SceneManager.LoadScene(0);
         }
+        OnLoad?.Invoke();
     }
 }

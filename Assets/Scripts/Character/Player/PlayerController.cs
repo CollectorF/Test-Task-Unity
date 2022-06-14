@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,9 +29,7 @@ public class PlayerController : BaseCharacterController
 
     public PlayerState State => (PlayerState)stats.State;
 
-    public delegate void EndPointReached();
-
-    public event EndPointReached OnReachEndPoint;
+    public Action<LevelState> OnReachEndPoint;
 
     protected override void Awake()
     {
@@ -54,7 +53,20 @@ public class PlayerController : BaseCharacterController
         {
             if (ReachedFinishPoint())
             {
-                OnReachEndPoint?.Invoke();
+                OnReachEndPoint?.Invoke(LevelState.Win);
+                levelFinished = true;
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy/Enemy_Body") || collision.gameObject.CompareTag("Enemy/Enemy_Head"))
+        {
+            var controller = collision.gameObject.GetComponentInParent<EnemyController>();
+            if (!controller.isDead)
+            {
+                OnReachEndPoint?.Invoke(LevelState.Lose);
                 levelFinished = true;
             }
         }
@@ -74,7 +86,7 @@ public class PlayerController : BaseCharacterController
 
     public void OnClick(InputAction.CallbackContext callback)
     {
-        if (true)
+        if (!levelFinished)
         {
 #if UNITY_ANDROID || UNITY_IOS
             tapPoint = Touchscreen.current.primaryTouch.position.ReadValue();
@@ -95,18 +107,6 @@ public class PlayerController : BaseCharacterController
     {
         pointNumber++;
         agent.SetDestination(waypoints[pointNumber]);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy/Enemy_Body") || collision.gameObject.CompareTag("Enemy/Enemy_Head"))
-        {
-            var controller = collision.gameObject.GetComponentInParent<EnemyController>();
-            if (!controller.isDead)
-            {
-                Debug.Log("Game over!");
-            }
-        }
     }
 
     private bool ReachedFinishPoint()

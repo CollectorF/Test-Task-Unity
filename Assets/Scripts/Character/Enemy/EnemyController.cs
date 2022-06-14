@@ -35,7 +35,7 @@ public class EnemyController : BaseCharacterController
                     {
                         return !isDead && !isKnockedOut;
                     })
-                    .FollowPlayer(gameManager.Player.transform, agent, 1, this)
+                    .FollowPlayer(gameManager.Player.transform, agent, 1.5f, this)
                 .End()
 
                 .Sequence("Lie down")
@@ -76,7 +76,6 @@ public class EnemyController : BaseCharacterController
         else
         {
             SetRagdollCondition(true);
-            //agent.isStopped = true;
             agent.enabled = false;
         }
     }
