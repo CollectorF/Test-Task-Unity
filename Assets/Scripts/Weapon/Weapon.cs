@@ -76,18 +76,11 @@ public class Weapon : MonoBehaviour
                 ExecuteEffect(statsSystem);
                 OnActivate?.Invoke(statsSystem);
                 ContactPoint contact = collision.contacts[0];
+                collision.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(Vector3.forward * 500, contact.point, ForceMode.Impulse);
                 vfxProcessor.DisplayVFX(contact);
             }
         }
     }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Enemy/Enemy"))
-    //    {
-
-    //    }
-    //}
 
     private void ExecuteEffect(StatsSystem targetStatSystem)
     {
@@ -117,6 +110,10 @@ public class Weapon : MonoBehaviour
     internal void AddImpulse()
     {
         rigidBody.AddForce(gameObject.transform.forward * parameters.ThrowForce, ForceMode.Impulse);
+    }
+
+    internal void AddTorque()
+    {
         if (parameters.needsTorque)
         {
             rigidBody.AddRelativeTorque(parameters.AngleVelocity);

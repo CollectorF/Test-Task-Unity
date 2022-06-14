@@ -54,7 +54,6 @@ public class PlayerController : BaseCharacterController
         {
             if (ReachedFinishPoint())
             {
-                Debug.Log("You win!");
                 OnReachEndPoint?.Invoke();
                 levelFinished = true;
             }
@@ -88,6 +87,7 @@ public class PlayerController : BaseCharacterController
             currentWeapon.transform.LookAt(aimPoint);
             Weapon weaponController = currentWeapon.GetComponent<Weapon>();
             weaponController.AddImpulse();
+            weaponController.AddTorque();
         }
     }
 
