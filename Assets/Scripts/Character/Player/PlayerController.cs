@@ -26,10 +26,15 @@ public class PlayerController : BaseCharacterController
     private int pointNumber;
     private float tolerance = 1;
     private bool levelFinished = false;
+    private bool firstShotCompleted = false;
 
     public PlayerState State => (PlayerState)stats.State;
 
     public Action<LevelState> OnReachEndPoint;
+
+    public delegate void FirstShotEvent();
+
+    public event FirstShotEvent OnFirstShot;
 
     protected override void Awake()
     {
@@ -100,6 +105,11 @@ public class PlayerController : BaseCharacterController
             Weapon weaponController = currentWeapon.GetComponent<Weapon>();
             weaponController.AddImpulse();
             weaponController.AddTorque();
+            if (!firstShotCompleted)
+            {
+                OnFirstShot?.Invoke();
+                firstShotCompleted = true;
+            }
         }
     }
 

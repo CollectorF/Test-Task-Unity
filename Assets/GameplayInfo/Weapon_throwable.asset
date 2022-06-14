@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Weapon_throwable
   m_EditorClassIdentifier: 
   needsTorque: 1
-  ThrowForce: 500
+  ThrowForce: 700
   AngleVelocity: {x: 500, y: 0, z: 0}
   SpeedDamageInHead: 2
   HealthDamageInHead: 100

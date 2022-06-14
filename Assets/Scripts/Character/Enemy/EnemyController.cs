@@ -2,6 +2,7 @@ using UnityEngine;
 using CleverCrow.Fluid.BTs.Trees;
 using CleverCrow.Fluid.BTs.Tasks;
 
+
 public class EnemyController : BaseCharacterController
 {
     [SerializeField]
@@ -12,8 +13,15 @@ public class EnemyController : BaseCharacterController
 
     public BaseState State => stats.State;
     private Animator animator;
+    internal Canvas targetCanvas;
     internal bool isDead = false;
     internal bool isKnockedOut = false;
+    private bool firstShot = false;
+
+    public void SetFirstShotState(bool state)
+    {
+        firstShot = state;
+    }
 
     protected override void Awake()
     {
@@ -21,6 +29,7 @@ public class EnemyController : BaseCharacterController
         OnDie += controller => isDead = true;
         OnKnockOut += controller => isKnockedOut = true;
         animator = GetComponent<Animator>();
+        targetCanvas = GetComponentInChildren<Canvas>();
         SetRagdollParts();
     }
 
@@ -29,6 +38,14 @@ public class EnemyController : BaseCharacterController
         base.Start();
         behaviorTree = new BehaviorTreeBuilder(gameObject)
             .Selector()
+
+                .Sequence("Wait for first shot")
+                    .Condition("If there is no first shot", () =>
+                        {
+                            return !firstShot;
+                        })
+                    .Wait(1)
+                .End()
 
                 .Sequence("Move towards player")
                     .Condition("If not dead", () =>

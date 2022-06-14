@@ -11,7 +11,6 @@ public class FollowPlayer : ActionBase
     private EnemyController controller;
     private Vector3 targetPoint;
     private float targetDistance;
-    private float remainingDistance;
     private float pathfindingTolerance = 1;
     private bool canFindAWay;
     private NavMeshPath path;
@@ -23,7 +22,6 @@ public class FollowPlayer : ActionBase
         waypoint = target;
         this.targetDistance = targetDistance;
         this.agent = agent;
-        remainingDistance = targetDistance;
         this.controller = controller;
     }
 

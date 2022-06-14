@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public UIManager uiManager;
 
     private PlayerController playerController;
-    private float completePercent;
+    private EnemyController closesetEnemy;
 
     private void Awake()
     {
@@ -30,15 +30,33 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         uiManager.ActivateGameplayUI(levelManager.GetCurrentLevelNumber());
-        levelManager.OnMove += playerController.MoveToNextPlatform;
-        playerController.OnReachEndPoint += UpdateUi;
+
+        playerController.OnReachEndPoint += UpdateUI;
+        playerController.OnFirstShot += UpdateStarterUI;
+
         enemyManager.OnDie += uiManager.UpdateProgressBar;
+
         levelManager.OnLoad += uiManager.ActivateGameplayUI;
+        levelManager.OnMove += playerController.MoveToNextPlatform;
+
+        DrawTargetOnClosestEnemy();
     }
 
-    private void UpdateUi(LevelState state)
+    private void UpdateUI(LevelState state)
     {
         levelManager.levelState = state;
         uiManager.ActivateLevelEndUI(levelManager.GetCurrentLevelNumber(), state);
+    }
+
+    private void UpdateStarterUI()
+    {
+        enemyManager.FirstShotCompleted();
+        closesetEnemy.targetCanvas.enabled = false;
+    }
+
+    private void DrawTargetOnClosestEnemy()
+    {
+        closesetEnemy = enemyManager.FindClosestEnemy(playerController.transform.position);
+        closesetEnemy.targetCanvas.enabled = true;
     }
 }

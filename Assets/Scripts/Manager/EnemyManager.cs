@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField]
@@ -13,7 +14,7 @@ public class EnemyManager : MonoBehaviour
 
     public event DieEvent OnDie;
 
-    private void Awake()
+    private void Start()
     {
         var preSpawnedEnemies = FindObjectsOfType<EnemyController>();
         foreach (var enemy in preSpawnedEnemies)
@@ -26,7 +27,16 @@ public class EnemyManager : MonoBehaviour
     private void PrepareEnemy(EnemyController controller)
     {
         controller.OnDie += OnEnemyDie;
+        controller.targetCanvas.enabled = false;
         enemyList.Add(controller);
+    }
+
+    internal void FirstShotCompleted()
+    {
+        foreach (var item in enemyList)
+        {
+            item.SetFirstShotState(true);
+        }
     }
 
     private void OnEnemyDie(BaseCharacterController controller)
@@ -37,5 +47,22 @@ public class EnemyManager : MonoBehaviour
             killedEnemiesCount = initialEnemiesCount - enemyList.Count;
             OnDie?.Invoke(initialEnemiesCount, killedEnemiesCount);
         }
+    }
+
+    public EnemyController FindClosestEnemy(Vector3 target)
+    {
+        float minDistance = float.PositiveInfinity;
+        EnemyController closestEnemyController = null;
+        foreach (var enemyController in enemyList)
+        {
+            Vector3 enemyTarget = enemyController.transform.position;
+            float distance = Vector3.Distance(enemyTarget, target);
+            if (distance < minDistance)
+            {
+                closestEnemyController = enemyController;
+                minDistance = distance;
+            }
+        }
+        return closestEnemyController;
     }
 }

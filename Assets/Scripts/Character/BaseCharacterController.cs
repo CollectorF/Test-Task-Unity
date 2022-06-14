@@ -45,7 +45,7 @@ public class BaseCharacterController : MonoBehaviour
             OnDie?.Invoke(this);
             foreach (var item in meshRenderers)
             {
-                item.material.color = Color.black;
+                item.material.color = Color.gray;
             }
         }
         if (oldState != null && oldState.Health != newState.Health)
