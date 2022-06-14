@@ -1,11 +1,10 @@
-using System;
 using UnityEngine;
 
-[Serializable]
-public struct WeaponParameters
+[CreateAssetMenu(fileName = "weapon", menuName = "Weapons/Default")]
+public class WeaponParameters : ScriptableObject
 {
     public bool needsTorque;
-    public float ThrowSpeed;
+    public float ThrowForce;
     public Vector3 AngleVelocity;
     public float SpeedDamageInHead;
     public float HealthDamageInHead;

@@ -1,8 +1,6 @@
 using UnityEngine;
 using CleverCrow.Fluid.BTs.Trees;
 using CleverCrow.Fluid.BTs.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 
 public class EnemyController : BaseCharacterController
 {
@@ -16,8 +14,6 @@ public class EnemyController : BaseCharacterController
     private Animator animator;
     internal bool isDead = false;
     internal bool isKnockedOut = false;
-    private List<Collider> ragdollColliders;
-    private BoxCollider mainCollider;
 
     protected override void Awake()
     {
@@ -25,7 +21,6 @@ public class EnemyController : BaseCharacterController
         OnDie += controller => isDead = true;
         OnKnockOut += controller => isKnockedOut = true;
         animator = GetComponent<Animator>();
-        mainCollider = GetComponent<BoxCollider>();
         SetRagdollParts();
     }
 
@@ -33,7 +28,6 @@ public class EnemyController : BaseCharacterController
     {
         base.Start();
         behaviorTree = new BehaviorTreeBuilder(gameObject)
-            .WaitTime(2)
             .Selector()
 
                 .Sequence("Move towards player")
@@ -51,7 +45,7 @@ public class EnemyController : BaseCharacterController
                     })
                     .Do("Lie down", () =>
                     {
-                        SetRagdollState(true);
+                        SetRagdollCondition(true);
                         return TaskStatus.Success;
                     })
                     .WaitTime(starterInfo.delayOnInjury)
@@ -63,7 +57,7 @@ public class EnemyController : BaseCharacterController
                     .WaitTime(1f)
                     .Do("Get up again", () =>
                     { 
-                        SetRagdollState(false);
+                        SetRagdollCondition(false);
                         isKnockedOut = false;
                         return TaskStatus.Success;
                     })
@@ -81,13 +75,10 @@ public class EnemyController : BaseCharacterController
         }
         else
         {
-            SetRagdollState(true);
+            SetRagdollCondition(true);
+            //agent.isStopped = true;
+            agent.enabled = false;
         }
-    }
-
-    private void FixedUpdate()
-    {
-        Debug.Log($"Velocity magnitude: {agent.velocity.magnitude}");
     }
 
     protected override void OnStateUpdate(BaseState oldState, BaseState newState)
@@ -101,27 +92,20 @@ public class EnemyController : BaseCharacterController
 
     private void SetRagdollParts()
     {
-        ragdollColliders = new List<Collider>();
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach (var item in colliders)
         {
             if (item.gameObject != gameObject)
             {
-                item.isTrigger = true;
-                ragdollColliders.Add(item);
+                item.isTrigger = false;
             }
         }
     }
 
-    private void SetRagdollState(bool state)
+    private void SetRagdollCondition(bool state)
     {
         animator.enabled = !state;
         agent.enabled = !state;
-        foreach (var item in ragdollColliders)
-        {
-            item.isTrigger = !state;
-        }
-        mainCollider.enabled = !state;
     }
 
     private void AddImpulse(float impulse)

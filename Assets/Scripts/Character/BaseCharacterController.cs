@@ -43,11 +43,9 @@ public class BaseCharacterController : MonoBehaviour
         if (newState.Health <= 0)
         {
             OnDie?.Invoke(this);
-            agent.isStopped = true;
-            agent.enabled = false;
             foreach (var item in meshRenderers)
             {
-                item.material.color = Color.gray;
+                item.material.color = Color.black;
             }
         }
         if (oldState != null && oldState.Health != newState.Health)

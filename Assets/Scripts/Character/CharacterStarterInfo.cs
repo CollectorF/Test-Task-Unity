@@ -1,8 +1,7 @@
-using System;
+using UnityEngine;
 
-[Serializable]
-//[CreateAssetMenu(fileName = "character.settings", menuName = "Characters/Enemy")]
-public struct CharacterStarterInfo
+[CreateAssetMenu(fileName = "character", menuName = "Characters/Default")]
+public class CharacterStarterInfo : ScriptableObject
 {
     public float Speed;
     public float MaxHealth;

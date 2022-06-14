@@ -46,8 +46,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.13039461
-  m_Center: {x: -1.0416148e-16, y: 0.060000002, z: 0.030646175}
+  m_Radius: 0.1634399
+  m_Center: {x: 0, y: 0.060000002, z: -0.01}
 --- !u!54 &246679716733637935
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -985,7 +985,6 @@ GameObject:
   - component: {fileID: 7986572850099025377}
   - component: {fileID: 6747700807837714208}
   - component: {fileID: 6747700807837714209}
-  - component: {fileID: 2320479854221446053}
   m_Layer: 0
   m_Name: Enemy_simple
   m_TagString: Enemy/Enemy
@@ -1000,7 +999,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2320479854221446058}
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 3.99, y: 0.9, z: 9.04682}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1066,10 +1065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a02f16bc433bab942bba5122a92f1b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  starterInfo:
-    Speed: 2
-    MaxHealth: 100
-    delayOnInjury: 3
+  starterInfo: {fileID: 11400000, guid: 0c59887f6bf8e1c4cbb60c8639f9321c, type: 2}
   GetupForcePoint: {fileID: 246679716733637935}
 --- !u!114 &6747700807837714209
 MonoBehaviour:
@@ -1083,19 +1079,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87a79f593a26fec418747d25e93f844a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &2320479854221446053
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2320479854221446058}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.61757946, y: 2.0414433, z: 0.24184561}
-  m_Center: {x: 0.005858898, y: 1.0147812, z: -0.014636755}
 --- !u!1 &2337591537585617129
 GameObject:
   m_ObjectHideFlags: 0

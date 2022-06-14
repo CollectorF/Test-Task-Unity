@@ -99,9 +99,13 @@ public class PlayerController : BaseCharacterController
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy/Enemy"))
+        if (collision.gameObject.CompareTag("Enemy/Enemy_Body") || collision.gameObject.CompareTag("Enemy/Enemy_Head"))
         {
-            Debug.Log("Game over!");
+            var controller = collision.gameObject.GetComponentInParent<EnemyController>();
+            if (!controller.isDead)
+            {
+                Debug.Log("Game over!");
+            }
         }
     }
 

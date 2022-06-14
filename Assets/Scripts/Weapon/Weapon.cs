@@ -58,11 +58,11 @@ public class Weapon : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnCollisionEnter(Collision collision)
     {
         if (isAlive)
         {
-            collisionObject = collider.gameObject;
+            collisionObject = collision.gameObject;
             statsSystem = collisionObject.GetComponentInParent<StatsSystem>();
             if (statsSystem == null)
             {
@@ -75,24 +75,24 @@ public class Weapon : MonoBehaviour
             {
                 ExecuteEffect(statsSystem);
                 OnActivate?.Invoke(statsSystem);
+                ContactPoint contact = collision.contacts[0];
+                vfxProcessor.DisplayVFX(contact);
             }
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy/Enemy"))
-        {
-            ContactPoint contact = collision.contacts[0];
-            vfxProcessor.DisplayVFX(contact);
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Enemy/Enemy"))
+    //    {
+
+    //    }
+    //}
 
     private void ExecuteEffect(StatsSystem targetStatSystem)
     {
         targetStatSystem.ApplyStateChange(GetSpeedStateChange());
         targetStatSystem.ApplyStateChange(GetHeahthStateChange());
-        Debug.Log($"Health: {targetStatSystem.State.Health} / {targetStatSystem.State.MaxHealth} \n Speed: {targetStatSystem.State.Speed}");
     }
 
     private BaseStateChange GetHeahthStateChange()
@@ -116,7 +116,7 @@ public class Weapon : MonoBehaviour
 
     internal void AddImpulse()
     {
-        rigidBody.AddForce(gameObject.transform.forward * parameters.ThrowSpeed, ForceMode.Impulse);
+        rigidBody.AddForce(gameObject.transform.forward * parameters.ThrowForce, ForceMode.Impulse);
         if (parameters.needsTorque)
         {
             rigidBody.AddRelativeTorque(parameters.AngleVelocity);
