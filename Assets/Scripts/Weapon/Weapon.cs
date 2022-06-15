@@ -109,7 +109,7 @@ public class Weapon : MonoBehaviour
 
     internal void AddImpulse()
     {
-        rigidBody.AddForce(gameObject.transform.forward * parameters.ThrowForce, ForceMode.Impulse);
+        rigidBody.AddForce(gameObject.transform.forward * parameters.ThrowForce, ForceMode.VelocityChange);
     }
 
     internal void AddTorque()

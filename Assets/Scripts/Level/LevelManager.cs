@@ -16,7 +16,6 @@ public class LevelManager : MonoBehaviour
     internal LevelState levelState;
 
     public delegate void OnMoveToNextPlatform();
-    //public delegate void OnLevelLoad();
 
     public event OnMoveToNextPlatform OnMove;
     public Action<int> OnLoad;
